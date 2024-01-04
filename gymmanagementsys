@@ -1,0 +1,346 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp1
+{
+    // Singleton Pattern
+    public class GymManagementSystem
+    {
+        private static GymManagementSystem _instance;
+        private string gymName;
+        private string gymLocation;
+
+        private GymManagementSystem() { }
+
+        public static GymManagementSystem GetInstance()
+        {
+            if (_instance == null)
+            {
+                _instance = new GymManagementSystem();
+            }
+            return _instance;
+        }
+
+        public void SetGymName(string name)
+        {
+            gymName = name;
+        }
+
+        public string GetGymName()
+        {
+            return gymName;
+        }
+
+        public void SetGymLocation(string location)
+        {
+            gymLocation = location;
+        }
+
+        public string GetGymLocation()
+        {
+            return gymLocation;
+        }
+
+        // Other settings/configuration methods...
+    }
+
+    // State Pattern
+    public interface IState
+    {
+        void Handle(StateContext context);
+    }
+
+    // Concrete States
+    public class ActiveState : IState
+    {
+        public void Handle(StateContext context)
+        {
+            Console.WriteLine("Gym access granted.");
+        }
+    }
+
+    public class InactiveState : IState
+    {
+        public void Handle(StateContext context)
+        {
+            Console.WriteLine("Gym access denied. Please renew your membership.");
+        }
+    }
+
+
+    // Context
+    public class StateContext
+    {
+        public IState State { get; set; }
+
+        public StateContext(IState state)
+        {
+            State = state;
+        }
+
+        public void Request()
+        {
+            State.Handle(this);
+        }
+    }
+    // Factory Method Pattern
+    public abstract class Subscription
+    {
+        // Common properties and methods for subscriptions
+    }
+
+    public class MonthlySubscription : Subscription
+    {
+        public MonthlySubscription()
+        {
+            Console.WriteLine("Monthly subscription created.");
+        }
+    }
+
+    public class YearlySubscription : Subscription
+    {
+        public YearlySubscription()
+        {
+            Console.WriteLine("Yearly subscription created.");
+        }
+    }
+
+
+    public abstract class SubscriptionFactory
+    {
+        public abstract Subscription CreateSubscription();
+    }
+
+    public class MonthlySubscriptionFactory : SubscriptionFactory
+    {
+        public override Subscription CreateSubscription()
+        {
+            // Logic to instantiate and return a new MonthlySubscription
+            return new MonthlySubscription();
+        }
+    }
+
+    public class YearlySubscriptionFactory : SubscriptionFactory
+    {
+        public override Subscription CreateSubscription()
+        {
+            // Logic to instantiate and return a new YearlySubscription
+            return new YearlySubscription();
+        }
+    }
+    // Command Pattern
+    public interface ICommand
+    {
+        void Execute();
+    }
+
+    // Concrete Commands
+    public class BookClassCommand : ICommand
+    {
+        public void Execute()
+        {
+            Console.WriteLine("Class booked successfully.");
+        }
+    }
+
+    public class ProcessPaymentCommand : ICommand
+    {
+        public void Execute()
+        {
+            Console.WriteLine("Payment processed successfully.");
+        }
+    }
+
+    // Invoker
+    public class Operator
+    {
+        private ICommand _command;
+
+        public void SetCommand(ICommand command)
+        {
+            _command = command;
+        }
+
+        public void Invoke()
+        {
+            _command.Execute();
+        }
+    }
+    // Composite Pattern
+    public interface IGymComponent
+    {
+        void Operation();
+    }
+
+    public class Equipment : IGymComponent
+    {
+        private string equipmentName;
+
+        public Equipment(string name)
+        {
+            equipmentName = name;
+        }
+
+        public void Operation()
+        {
+            Console.WriteLine($"Operating {equipmentName}");
+        }
+    }
+
+    public class EquipmentComposite : IGymComponent
+    {
+        private List<IGymComponent> _components = new List<IGymComponent>();
+
+        public void Add(IGymComponent component)
+        {
+            _components.Add(component);
+        }
+
+        public void Operation()
+        {
+            foreach (var component in _components)
+            {
+                component.Operation();
+            }
+        }
+    }
+
+    // Builder Pattern
+    public class UserProfile
+    {
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string WorkoutPlan { get; set; }
+
+        // Other user profile properties...
+    }
+
+    public interface IUserProfileBuilder
+    {
+        void SetName(string name);
+        void SetEmail(string email);
+        void SetWorkoutPlan(string plan);
+        UserProfile Build();
+    }
+    public class UserProfileBuilder : IUserProfileBuilder
+    {
+        private UserProfile _userProfile = new UserProfile();
+
+        public void SetName(string name)
+        {
+            _userProfile.Name = name; // Set the name
+        }
+
+        public void SetEmail(string email)
+        {
+            _userProfile.Email = email; // Set the email
+        }
+
+        public void SetWorkoutPlan(string plan)
+        {
+            _userProfile.WorkoutPlan = plan; // Set the workout plan
+        }
+
+        public UserProfile Build()
+        {
+            return _userProfile;
+        }
+    }
+
+
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            String nam = "abdurrehman";
+            int password = 12345;
+            // Singleton Pattern
+            GymManagementSystem gymSystem = GymManagementSystem.GetInstance();
+            gymSystem.SetGymName("Fitness Center");
+            gymSystem.SetGymLocation("Downtown");
+
+            
+
+                    // Display Gym Name and Location
+                    Console.WriteLine("------------------------------");
+                    Console.WriteLine($"{gymSystem.GetGymName()}");
+                    Console.WriteLine($"Location: {gymSystem.GetGymLocation()}");
+                    Console.WriteLine("------------------------------");
+                    Console.WriteLine();
+            while (true)
+            {
+                Console.WriteLine("Enter Username: ");
+                string name = Console.ReadLine();
+
+                Console.WriteLine("Enter Password: ");
+                int pass = int.Parse(Console.ReadLine());
+
+                if (name == nam && pass == password)
+                {
+                    // State Pattern
+                    StateContext context = new StateContext(new ActiveState());
+                    context.Request(); // Simulating gym access granted
+
+
+
+                    // Factory Method Pattern
+                    SubscriptionFactory monthlyFactory = new MonthlySubscriptionFactory();
+                    Subscription monthlySubscription = monthlyFactory.CreateSubscription();
+
+                    SubscriptionFactory yearlyFactory = new YearlySubscriptionFactory();
+                    Subscription yearlySubscription = yearlyFactory.CreateSubscription();
+
+                    // Command Pattern
+                    Operator operatorInvoker = new Operator();
+
+                    ICommand bookClassCommand = new BookClassCommand();
+                    operatorInvoker.SetCommand(bookClassCommand);
+                    operatorInvoker.Invoke(); // Simulating booking a class
+
+                    ICommand processPaymentCommand = new ProcessPaymentCommand();
+                    operatorInvoker.SetCommand(processPaymentCommand);
+                    operatorInvoker.Invoke(); // Simulating processing a payment
+
+                    // Composite Pattern
+                    Equipment treadmill = new Equipment("Treadmill");
+                    Equipment dumbbells = new Equipment("Dumbbells");
+                    EquipmentComposite gymEquipment = new EquipmentComposite();
+
+                    gymEquipment.Add(treadmill);
+                    gymEquipment.Add(dumbbells);
+
+                    // Display Gym Equipment
+                    Console.WriteLine();
+                    Console.WriteLine("Gym Equipment:");
+                    gymEquipment.Operation(); // Simulating operating all gym equipment
+
+                    // Builder Pattern
+                    UserProfileBuilder profileBuilder = new UserProfileBuilder();
+                    profileBuilder.SetName("Abdur rehman");
+                    profileBuilder.SetEmail("abdurrehman@example.com");
+                    profileBuilder.SetWorkoutPlan("Cardio and Weight Training");
+
+                    UserProfile userProfile = profileBuilder.Build();
+
+                    // Display User Profile
+                    Console.WriteLine();
+                    Console.WriteLine("User Profile Created:");
+                    Console.WriteLine($"Name: {userProfile.Name}, Email: {userProfile.Email}, Workout Plan: {userProfile.WorkoutPlan}");
+                    Console.ReadLine();
+                    break;
+                    // More simulated scenarios and operations within the gym management system can be added here.
+                }
+                else
+                {
+                    Console.WriteLine("Invlaid Username && Password");
+                    Console.WriteLine("");
+                    continue;
+                }
+            }
+        }
+    }
+
+}
